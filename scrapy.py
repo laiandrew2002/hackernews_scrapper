@@ -30,6 +30,7 @@ def create_custom_hn(links, subtext):
         })
   return hn
 
+
 def hackernews_scrapping(url):
   res = requests.get(url)
   soup = BeautifulSoup(res.text, "html.parser")
