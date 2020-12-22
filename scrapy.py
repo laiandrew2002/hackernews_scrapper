@@ -2,13 +2,20 @@ import requests
 from bs4 import BeautifulSoup
 import pprint
 
-hackernewsUrlP1 = "https://news.ycombinator.com/news"
-hackernewsUrlP2 = hackernewsUrlP1 + "?p=2"
 # res = requests.get("https://news.ycombinator.com/news")
 # soup = BeautifulSoup(res.text, "html.parser")
 # links = soup.select(".storylink")
 # # votes = soup.select(".score")
 # subtext = soup.select(".subtext")
+
+def hackernews_five_page_url():
+  hackernewsUrlP1 = "https://news.ycombinator.com/news"
+  hackernewsList = [hackernewsUrlP1]
+  for i in range(4):
+    hackernewsPage = hackernewsUrlP1 + f"?p={i+2}"
+    hackernewsList.append(hackernewsPage)
+  return hackernewsList
+
 
 def sort_stories_by_votes(hnlist):
   return sorted(hnlist, key=lambda k: k["votes"], reverse=True)
@@ -40,8 +47,10 @@ def hackernews_scrapping(url):
   news = create_custom_hn(links, subtext)
   return news
 
-newslist1 = hackernews_scrapping(hackernewsUrlP1)
-newslist2 = hackernews_scrapping(hackernewsUrlP2)
-sortedNews = sort_stories_by_votes(newslist1 + newslist2)
 
-pprint.pprint(sortedNews)
+if __name__ == "__main__":
+  hackernews_page_list = hackernews_five_page_url()
+  # loop the page url and pass into hackernews_scrapping and then unpack them
+  finalNewsList = [news for url in hackernews_page_list for news in hackernews_scrapping(url)]
+  sortedNews = sort_stories_by_votes(finalNewsList)
+  pprint.pprint(sortedNews)
